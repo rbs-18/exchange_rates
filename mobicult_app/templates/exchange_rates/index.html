@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Exchange Rates App</title>
+  </head>
+  <body>
+    <header>
+        <nav>
+            <ul >
+                <li>
+                    <a href={% url 'exchange_rates:index' %}>Курс на сегодня {{  today }}</a>
+                </li>
+                <li>
+                    <a href=''>Курс на вчера {{ yesterday }}</a>
+                </li>
+                <li>
+                    <a href=''>Курс на позавчера {{ day_before_yesterday }}</a>
+                </li>
+        </nav>
+        Курсы валют на
+    </header>
+    <main>
+      <div>
+          <p>1 USD - {{ USD }} RUB</p>
+          <p>1 EUR - {{ EUR }} RUB</p>
+    </div>
+    </main>
+  </body>
+</html>
