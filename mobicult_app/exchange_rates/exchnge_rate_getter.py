@@ -58,6 +58,12 @@ class ExchangeRateGetter:
     def get_today_rate(self) -> dict[str, float]:
         return self._data[Days.TODAY]
 
+    def get_yesterday_rate(self) -> dict[str, float]:
+        return self._data[Days.YESTERDAY]
+
+    def get_day_before_yesterday_rate(self) -> dict[str, float]:
+        return self._data[Days.DAY_BEFORE_YESTERDAY]
+
 
 class Days:
     DAY_BEFORE_YESTERDAY = 'day_before_yesterday'

@@ -12,13 +12,13 @@
                     <a href={% url 'exchange_rates:index' %}>Курс на сегодня {{  today }}</a>
                 </li>
                 <li>
-                    <a href=''>Курс на вчера {{ yesterday }}</a>
+                    <a href={% url 'exchange_rates:yesterday' %}>Курс на вчера {{ yesterday }}</a>
                 </li>
                 <li>
-                    <a href=''>Курс на позавчера {{ day_before_yesterday }}</a>
+                    <a href={% url 'exchange_rates:day_before_yesterday' %}>Курс на позавчера {{ day_before_yesterday }}</a>
                 </li>
         </nav>
-        Курсы валют на
+        Курсы валют на {{ active_page }}
     </header>
     <main>
       <div>
