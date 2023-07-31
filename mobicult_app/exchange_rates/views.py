@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .exchnge_rate_getter import ExchangeRateGetter
+from .exchange_rate_getter import ExchangeRateGetter
 
 
 exchange_rate_getter = ExchangeRateGetter(target_currency=('USD', 'EUR'))
@@ -11,7 +11,9 @@ def _get_rate_page(request, rates: dict[str, float], day: str):
         'active_page': day,
         'today': f'({exchange_rate_getter.days.today})',
         'yesterday': f'({exchange_rate_getter.days.yesterday})',
-        'day_before_yesterday': f'({exchange_rate_getter.days.day_before_yesterday})',
+        'day_before_yesterday': (
+            f'({exchange_rate_getter.days.day_before_yesterday})'
+        ),
         **rates,
     }
     return render(
@@ -28,6 +30,7 @@ def index(request):
         rates=exchange_rate_getter.get_today_rate(),
         day=f'сегодня ({exchange_rate_getter.days.today})'
     )
+
 
 def yesterday(request):
     exchange_rate_getter.load_currency_data()

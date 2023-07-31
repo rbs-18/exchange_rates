@@ -1,9 +1,10 @@
 import json
 from collections.abc import Sequence
-from datetime import datetime, timedelta
 
 import requests
 from django.core.cache import cache
+
+from .days import Days
 
 
 class ExchangeRateGetter:
@@ -18,8 +19,8 @@ class ExchangeRateGetter:
             https://apilayer.com/marketplace/fixer-api#documentation-tab
     """
 
-    URL ='https://api.apilayer.com/fixer/timeseries'
-    APIKEY = 'T8cvUe57l9M6JbXgC15AwQqyvoqC25g3'
+    URL = 'https://api.apilayer.com/fixer/timeseries'
+    APIKEY = 'T8cvUe57l9M6JbXgC15AwQqyvoqC25g3'  # TODO надо будет спрятать
 
     def __init__(self, target_currency: Sequence, base_currency: str = 'RUB'):
         self._base = base_currency
@@ -51,7 +52,7 @@ class ExchangeRateGetter:
         if data['success']:
             for day, rates in zip(self._data, data['rates'].values()):
                 for currency, value in rates.items():
-                    rates[currency] =  round(1 / value, 2)
+                    rates[currency] = round(1 / value, 2)
                 self._data[day] = rates
             cache.set('data', value=json.dumps(self._data), timeout=60*60*24)
             return
@@ -71,28 +72,3 @@ class ExchangeRateGetter:
 
     def get_day_before_yesterday_rate(self) -> dict[str, float]:
         return self._data[Days.DAY_BEFORE_YESTERDAY]
-
-
-class Days:
-    DAY_BEFORE_YESTERDAY = 'day_before_yesterday'
-    YESTERDAY = 'yesterday'
-    TODAY = 'today'
-
-    DATE_FORMAT = '%Y-%m-%d'
-
-    def __init__(self):
-        self._today = datetime.now()
-        self._yesterday = self._today - timedelta(days=1)
-        self._day_before_yesterday = self._today - timedelta(days=2)
-
-    @property
-    def today(self) -> str:
-        return self._today.strftime(self.DATE_FORMAT)
-
-    @property
-    def yesterday(self) -> str:
-        return self._yesterday.strftime(self.DATE_FORMAT)
-
-    @property
-    def day_before_yesterday(self) -> str:
-        return self._day_before_yesterday.strftime(self.DATE_FORMAT)
