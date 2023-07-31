@@ -33,6 +33,7 @@ class ExchangeRateGetter:
 
     def load_currency_data(self):
         result = cache.get('data')
+
         try:
             self._data = json.loads(result)
         except TypeError:
