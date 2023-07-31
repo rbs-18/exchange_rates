@@ -30,11 +30,8 @@ def index(request):
     )
 
 def yesterday(request):
+    exchange_rate_getter.load_currency_data()
     rates = exchange_rate_getter.get_yesterday_rate()
-
-    if not rates:
-        exchange_rate_getter.load_currency_data()
-        rates = exchange_rate_getter.get_yesterday_rate()
 
     return _get_rate_page(
         request,
@@ -44,11 +41,8 @@ def yesterday(request):
 
 
 def day_before_yesterday(request):
+    exchange_rate_getter.load_currency_data()
     rates = exchange_rate_getter.get_day_before_yesterday_rate()
-
-    if not rates:
-        exchange_rate_getter.load_currency_data()
-        rates = exchange_rate_getter.get_day_before_yesterday_rate()
 
     return _get_rate_page(
         request,

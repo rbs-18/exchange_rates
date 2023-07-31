@@ -72,6 +72,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mobicult_app.wsgi.application'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

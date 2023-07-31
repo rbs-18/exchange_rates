@@ -1,7 +1,9 @@
+import json
 from collections.abc import Sequence
 from datetime import datetime, timedelta
 
 import requests
+from django.core.cache import cache
 
 
 class ExchangeRateGetter:
@@ -30,15 +32,19 @@ class ExchangeRateGetter:
         self.days = Days()
 
     def load_currency_data(self):
-        headers = {'apikey': self.APIKEY}
-        payload = {
-            'base': self._base,
-            'symbols': self._get_symbols(),
-            'start_date': self.days.day_before_yesterday,
-            'end_date': self.days.today,
-        }
-        response = requests.get(self.URL, params=payload, headers=headers)
-        self._write_data(data=response.json())
+        result = cache.get('data')
+        try:
+            self._data = json.loads(result)
+        except TypeError:
+            headers = {'apikey': self.APIKEY}
+            payload = {
+                'base': self._base,
+                'symbols': self._get_symbols(),
+                'start_date': self.days.day_before_yesterday,
+                'end_date': self.days.today,
+            }
+            response = requests.get(self.URL, params=payload, headers=headers)
+            self._write_data(data=response.json())
 
     def _write_data(self, data):
         if data['success']:
@@ -46,6 +52,7 @@ class ExchangeRateGetter:
                 for currency, value in rates.items():
                     rates[currency] =  round(1 / value, 2)
                 self._data[day] = rates
+            cache.set('data', value=json.dumps(self._data), timeout=60*60*24)
             return
 
         raise ValueError(data['error']['info'])
